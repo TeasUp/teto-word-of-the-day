@@ -1,11 +1,17 @@
 from telegram import Update, InputFile
 from telegram.ext import ApplicationBuilder, MessageHandler, filters, ContextTypes
 import logging
+from flask import Flask, request
+import os
+
 logging.basicConfig(level=logging.INFO)
 
 # Replace this with your actual bot token
 BOT_TOKEN = '7285496835:AAGk-utGF4yZYLSQCBMuV5olti4Ybq99hR8'
 MEDIA_PATH = 'ban_response.mp4'  # Video file path
+
+# Flask app for webhook
+app = Flask(__name__)
 
 async def ban_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     msg = update.message
@@ -35,19 +41,29 @@ async def ban_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     except Exception as e:
         await msg.reply_text(f"خطا در بن کردن: {e}")
 
-# Start the bot
-app = ApplicationBuilder().token(BOT_TOKEN).build()
-app.add_handler(MessageHandler(filters.TEXT & filters.REPLY, ban_handler))
+# Initialize bot
+bot_app = ApplicationBuilder().token(BOT_TOKEN).build()
+bot_app.add_handler(MessageHandler(filters.TEXT & filters.REPLY, ban_handler))
+
+@app.route('/webhook', methods=['POST'])
+def webhook():
+    update = Update.de_json(request.get_json(), bot_app.bot)
+    bot_app.process_update(update)
+    return 'OK'
+
+@app.route('/')
+def home():
+    return 'Bot is running!'
 
 if __name__ == "__main__":
-    # Clear any existing webhook
-    import asyncio
-    async def clear_webhook():
-        await app.bot.delete_webhook(drop_pending_updates=True)
+    # Get port from environment variable
+    port = int(os.environ.get('PORT', 8080))
     
-    # Run the clear webhook function
-    asyncio.run(clear_webhook())
+    # Set webhook URL
+    webhook_url = f"https://your-railway-domain.railway.app/webhook"
     
-    # Start polling
-    app.run_polling(drop_pending_updates=True)
-
+    # Set webhook
+    bot_app.bot.set_webhook(url=webhook_url)
+    
+    # Run Flask app
+    app.run(host='0.0.0.0', port=port) 
