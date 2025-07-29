@@ -1,5 +1,7 @@
 from telegram import Update, InputFile
 from telegram.ext import ApplicationBuilder, MessageHandler, filters, ContextTypes
+import logging
+logging.basicConfig(level=logging.INFO)
 
 # Replace this with your actual bot token
 BOT_TOKEN = '7285496835:AAGk-utGF4yZYLSQCBMuV5olti4Ybq99hR8'
@@ -36,4 +38,6 @@ async def ban_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # Start the bot
 app = ApplicationBuilder().token(BOT_TOKEN).build()
 app.add_handler(MessageHandler(filters.TEXT & filters.REPLY, ban_handler))
-app.run_polling()
+if __name__ == "__main__":
+    app.run_polling()
+
