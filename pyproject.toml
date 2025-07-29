@@ -1,0 +1,14 @@
+[tool.poetry]
+name = "teto-word-of-the-day"
+version = "0.1.0"
+description = "Telegram bot for word of the day"
+authors = ["Your Name"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+python-telegram-bot = "20.7"
+flask = "2.3.3"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api" 

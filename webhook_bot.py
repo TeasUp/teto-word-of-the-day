@@ -56,14 +56,23 @@ def home():
     return 'Bot is running!'
 
 if __name__ == "__main__":
-    # Get port from environment variable
+    # Get port from environment variable (Replit uses 8080)
     port = int(os.environ.get('PORT', 8080))
     
-    # Set webhook URL
-    webhook_url = f"https://your-railway-domain.railway.app/webhook"
+    print("Starting bot on Replit...")
+    print(f"Port: {port}")
     
-    # Set webhook
-    bot_app.bot.set_webhook(url=webhook_url)
+    # For Replit, we need to use the Replit URL
+    repl_url = os.environ.get('REPL_SLUG', 'localhost')
+    if repl_url != 'localhost':
+        webhook_url = f"https://{repl_url}.{os.environ.get('REPL_OWNER', 'user')}.repl.co/webhook"
+        print(f"Setting webhook to: {webhook_url}")
+        
+        # Set webhook
+        import asyncio
+        async def set_webhook():
+            await bot_app.bot.set_webhook(url=webhook_url)
+        asyncio.run(set_webhook())
     
     # Run Flask app
     app.run(host='0.0.0.0', port=port) 
