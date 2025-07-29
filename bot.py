@@ -5,7 +5,7 @@ logging.basicConfig(level=logging.INFO)
 
 # Replace this with your actual bot token
 BOT_TOKEN = '7285496835:AAGk-utGF4yZYLSQCBMuV5olti4Ybq99hR8'
-MEDIA_PATH = 'media/ban_response.mp4'  # Video file path
+MEDIA_PATH = 'ban_response.mp4'  # Video file path
 
 async def ban_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     msg = update.message
